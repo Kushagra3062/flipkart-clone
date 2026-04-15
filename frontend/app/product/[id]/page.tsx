@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Star, ShoppingCart, Zap, Heart } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
@@ -13,10 +14,11 @@ import Skeleton from "@/components/Skeleton";
 import { use } from "react";
 
 export default function ProductDetail({ params }: { params: Promise<{ id: string }> }) {
+  const router = useRouter();
   const { id } = use(params);
   const [product, setProduct] = useState<any>(null);
   const [activeImage, setActiveImage] = useState("");
-  const { addToCart, items } = useCartStore();
+  const { addToCart, items, fetchCart } = useCartStore();
   const { isLoggedIn, token } = useAuthStore();
   const { toggleWishlist, isInWishlist } = useWishlistStore();
   const [isAdded, setIsAdded] = useState(false);
@@ -47,6 +49,18 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
   const handleAddToCart = () => {
       addToCart(id, 1);
       setIsAdded(true);
+  };
+
+  const handleBuyNow = async () => {
+      if (!isLoggedIn) {
+          router.push(`/login?redirect=/checkout`);
+          return;
+      }
+      // Add to cart if not already present
+      if (!isAdded) {
+          await addToCart(id, 1);
+      }
+      router.push("/checkout");
   };
 
   const handleToggleWishlist = async () => {
@@ -127,7 +141,10 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
                >
                  <ShoppingCart className="w-5 h-5"/> {isAdded ? "ADDED TO CART" : "ADD TO CART"}
                </button>
-               <button className="flex-1 bg-accent hover:bg-[#eb5a13] text-white py-[18px] rounded-[2px] font-bold text-[16px] shadow-[0_1px_2px_0_rgba(0,0,0,.2)] tracking-wide flex items-center justify-center gap-2 transition duration-300">
+               <button 
+                onClick={handleBuyNow}
+                className="flex-1 bg-accent hover:bg-[#eb5a13] text-white py-[18px] rounded-[2px] font-bold text-[16px] shadow-[0_1px_2px_0_rgba(0,0,0,.2)] tracking-wide flex items-center justify-center gap-2 transition duration-300"
+               >
                  <Zap className="w-[22px] h-[22px] fill-current pr-0.5"/> BUY NOW
                </button>
             </div>

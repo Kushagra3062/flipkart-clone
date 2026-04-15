@@ -133,7 +133,7 @@ export default function LoginPage() {
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   placeholder="Enter Email/Mobile Number"
-                  className="w-full border-b border-gray-300 py-2 outline-none focus:border-primary transition placeholder:text-gray-400"
+                  className="w-full border-b border-gray-300 py-2 outline-none focus:border-primary transition placeholder:text-gray-500 placeholder:font-bold text-[16px] font-bold text-gray-900"
                   required
                 />
               </div>
@@ -143,7 +143,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter Password"
-                  className="w-full border-b border-gray-300 py-2 outline-none focus:border-primary transition placeholder:text-gray-400"
+                  className="w-full border-b border-gray-300 py-2 outline-none focus:border-primary transition placeholder:text-gray-500 placeholder:font-bold text-[16px] font-bold text-gray-900"
                   required
                 />
                 <button 
@@ -194,7 +194,7 @@ export default function LoginPage() {
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   placeholder="Enter Email/Mobile Number"
-                  className="w-full border-b border-gray-300 py-2 outline-none focus:border-primary transition"
+                  className="w-full border-b border-gray-300 py-2 outline-none focus:border-primary transition placeholder:text-gray-500 placeholder:font-bold text-[16px] font-bold text-gray-900"
                   required
                 />
               </div>
@@ -234,7 +234,7 @@ export default function LoginPage() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Set New Password"
-                  className="w-full border-b border-gray-300 py-2 outline-none focus:border-primary transition"
+                  className="w-full border-b border-gray-300 py-2 outline-none focus:border-primary transition placeholder:text-gray-500 placeholder:font-bold text-[16px] font-bold text-gray-900"
                   required
                   minLength={8}
                 />

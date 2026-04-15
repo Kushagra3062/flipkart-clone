@@ -86,7 +86,7 @@ export default function SignupPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Enter Full Name"
-                className="w-full border-b border-gray-300 py-2 outline-none focus:border-primary transition placeholder:text-gray-400"
+                className="w-full border-b border-gray-300 py-2 outline-none focus:border-primary transition placeholder:text-gray-500 placeholder:font-bold text-[16px] font-bold text-gray-900"
                 required
               />
             </div>
@@ -96,7 +96,7 @@ export default function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter Email"
-                className="w-full border-b border-gray-300 py-2 outline-none focus:border-primary transition placeholder:text-gray-400"
+                className="w-full border-b border-gray-300 py-2 outline-none focus:border-primary transition placeholder:text-gray-500 placeholder:font-bold text-[16px] font-bold text-gray-900"
                 required
               />
             </div>
@@ -106,7 +106,7 @@ export default function SignupPage() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Enter Mobile Number"
-                className="w-full border-b border-gray-300 py-2 outline-none focus:border-primary transition placeholder:text-gray-400"
+                className="w-full border-b border-gray-300 py-2 outline-none focus:border-primary transition placeholder:text-gray-500 placeholder:font-bold text-[16px] font-bold text-gray-900"
                 required
                 pattern="[0-9]{10}"
                 maxLength={10}
@@ -118,7 +118,7 @@ export default function SignupPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Create Password"
-                className="w-full border-b border-gray-300 py-2 outline-none focus:border-primary transition placeholder:text-gray-400"
+                className="w-full border-b border-gray-300 py-2 outline-none focus:border-primary transition placeholder:text-gray-500 placeholder:font-bold text-[16px] font-bold text-gray-900"
                 required
                 minLength={8}
               />

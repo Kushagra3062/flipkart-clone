@@ -1,0 +1,10 @@
+[project]
+name = "flipkart-clone"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "sendgrid>=6.12.5",
+    "twilio>=9.10.5",
+]

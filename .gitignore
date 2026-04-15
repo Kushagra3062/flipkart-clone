@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.venv
+.env
+.ipynb_checkpoints
+
+# Node.js
+node_modules/
+.next/
+out/
+next-env.d.ts
+.DS_Store
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.parcel-cache
+.cache
+
+# Project Specific
+frontend/public/banners/*.png
+!frontend/public/banners/electronics.png
+!frontend/public/banners/fashion.png
+!frontend/public/banners/appliances.png
+!frontend/public/banners/mobiles.png

@@ -22,11 +22,18 @@ class Settings(BaseSettings):
     @field_validator("ALLOWED_ORIGINS", mode="before")
     @classmethod
     def assemble_cors_origins(cls, v: str | list[str]) -> list[str]:
-        if isinstance(v, str) and not v.startswith("["):
-            return [i.strip() for i in v.split(",")]
-        elif isinstance(v, str):
-            import json
-            return json.loads(v)
+        if isinstance(v, str):
+            v = v.strip()
+            if not v:
+                return []
+            if not v.startswith("["):
+                return [i.strip() for i in v.split(",")]
+            try:
+                import json
+                return json.loads(v)
+            except (json.JSONDecodeError, TypeError):
+                # Fallback: strip brackets and try comma split if JSON fails
+                return [i.strip() for i in v.strip("[]").split(",") if i.strip()]
         return v
     
     # Google OAuth

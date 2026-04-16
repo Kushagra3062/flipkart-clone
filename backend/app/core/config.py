@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import AnyHttpUrl, field_validator
+from typing import Any
 import json
 import uuid
 
@@ -17,11 +18,11 @@ class Settings(BaseSettings):
     CLOUDINARY_URL: str
     
     # CORS
-    ALLOWED_ORIGINS: list[str] = []
+    ALLOWED_ORIGINS: Any = []
 
     @field_validator("ALLOWED_ORIGINS", mode="before")
     @classmethod
-    def assemble_cors_origins(cls, v: str | list[str]) -> list[str]:
+    def assemble_cors_origins(cls, v: Any) -> list[str]:
         if isinstance(v, str):
             v = v.strip()
             if not v:

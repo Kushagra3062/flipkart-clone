@@ -21,6 +21,12 @@ export default function CheckoutPage() {
   const [success, setSuccess] = useState<{ number: string, total: number } | null>(null);
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("COD");
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<{code: string, discount: number, message: string} | null>(null);
+  const [couponError, setCouponError] = useState("");
+
+  const finalCartDiscount = total_discount + (appliedCoupon ? appliedCoupon.discount : 0);
+  const finalCartTotal = total_amount - (appliedCoupon ? appliedCoupon.discount : 0);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -37,16 +43,9 @@ export default function CheckoutPage() {
     setLoading(true);
     try {
       const payload = {
-         address: {
-           full_name: selectedAddress.full_name,
-           phone: selectedAddress.phone,
-           pincode: selectedAddress.pincode,
-           city: selectedAddress.city,
-           state: selectedAddress.state,
-           address_line1: selectedAddress.address_line1,
-           address_line2: selectedAddress.address_line2
-         },
-         payment_method: paymentMethod
+         use_existing_address_id: selectedAddress.id,
+         payment_method: paymentMethod,
+         coupon_code: appliedCoupon ? appliedCoupon.code : null
       };
       
       const res = await api.post("/api/v1/orders/checkout", payload);
@@ -187,7 +186,51 @@ export default function CheckoutPage() {
                            </div>
                         </div>
                       ))}
-                      <div className="flex justify-between items-center bg-[#f5faff] p-4 rounded-sm">
+
+                      {/* Coupon Section */}
+                      <div className="border-t border-gray-100 pt-4 mt-4">
+                         <h4 className="text-sm font-bold text-gray-800 uppercase mb-3">Apply Coupon</h4>
+                         {appliedCoupon ? (
+                            <div className="bg-green-50 border border-green-200 p-3 rounded flex justify-between items-center">
+                               <div>
+                                  <span className="text-green-700 font-bold tracking-wide">{appliedCoupon.code} applied!</span>
+                                  <p className="text-13px text-green-600 mt-0.5">{appliedCoupon.message}</p>
+                               </div>
+                               <button onClick={() => setAppliedCoupon(null)} className="text-sm text-red-500 font-bold hover:underline">REMOVE</button>
+                            </div>
+                         ) : (
+                            <div className="flex flex-col gap-2">
+                               <div className="flex gap-2">
+                                  <input 
+                                    type="text" 
+                                    placeholder="Enter Coupon Code" 
+                                    className="border border-gray-300 rounded px-3 py-2 text-sm flex-1 uppercase outline-none focus:border-primary-blue transition-colors"
+                                    value={couponCode}
+                                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                                  />
+                                  <button onClick={async () => {
+                                    if (!couponCode) return;
+                                    try {
+                                      setCouponError("");
+                                      const res = await api.post(`/api/v1/coupons/validate?code=${couponCode}&cart_total=${subtotal}`);
+                                      setAppliedCoupon({
+                                        code: res.data.code,
+                                        discount: res.data.discount_amount,
+                                        message: res.data.message
+                                      });
+                                      setCouponCode("");
+                                    } catch (err: any) {
+                                      setCouponError(err.response?.data?.detail || "Invalid coupon code");
+                                      setAppliedCoupon(null);
+                                    }
+                                  }} className="bg-gray-800 text-white px-6 py-2 rounded text-sm font-bold hover:bg-gray-700 transition uppercase tracking-wide">APPLY</button>
+                               </div>
+                               {couponError && <p className="text-red-500 text-xs font-medium">{couponError}</p>}
+                            </div>
+                         )}
+                      </div>
+
+                      <div className="flex justify-between items-center bg-[#f5faff] p-4 rounded-sm mt-4">
                          <span className="text-xs text-gray-600">Order confirmation email will be sent to <span className="font-bold text-gray-900">{user?.email}</span></span>
                          <button onClick={() => setActiveStep(4)} className="bg-[#fb641b] text-white px-12 py-[14px] rounded-[2px] font-bold text-[15px] shadow-md uppercase">Continue</button>
                       </div>
@@ -236,7 +279,7 @@ export default function CheckoutPage() {
                   
                   <div className="flex justify-between text-[15px] text-[#212121]">
                     <span>Discount</span>
-                    <span className="text-[#388e3c]">- ₹{total_discount.toLocaleString()}</span>
+                    <span className="text-[#388e3c]">- ₹{finalCartDiscount.toLocaleString()}</span>
                   </div>
                   
                   <div className="flex justify-between text-[15px] text-[#212121]">
@@ -246,11 +289,11 @@ export default function CheckoutPage() {
                   
                   <div className="flex justify-between text-[18px] font-bold text-[#212121] border-t border-dashed border-[#e0e0e0] py-[14px] mt-1">
                     <span>Total Amount</span>
-                    <span>₹{total_amount.toLocaleString()}</span>
+                    <span>₹{finalCartTotal.toLocaleString()}</span>
                   </div>
                   
                   <div className="text-[15px] font-[500] text-[#388e3c] pb-1">
-                    You will save ₹{total_discount.toLocaleString()} on this order
+                    You will save ₹{finalCartDiscount.toLocaleString()} on this order
                   </div>
                 </div>
               </div>

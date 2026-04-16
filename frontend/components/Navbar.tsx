@@ -27,19 +27,19 @@ export default function Navbar() {
   const profileMenuItems = [
     { label: "My Profile", icon: <User className="w-4 h-4" />, link: "/profile" },
     { label: "Flipkart Plus Zone", icon: <Plus className="w-4 h-4 text-blue-600" />, link: "/plus" },
-    { label: "Orders", icon: <Briefcase className="w-4 h-4" />, link: "/orders" },
+    { label: "Orders", icon: <Briefcase className="w-4 h-4" />, link: "/profile?section=orders" },
     { label: "Wishlist", icon: <TrendingUp className="w-4 h-4" />, link: "/wishlist" },
     { label: "Coupons", icon: <PieChart className="w-4 h-4" />, link: "/coupons" },
-    { label: "Gift Cards", icon: <Download className="w-4 h-4" />, link: "/giftcards" },
+    { label: "Gift Cards", icon: <Download className="w-4 h-4" />, link: "/gift-cards" },
     { label: "Notifications", icon: <Bell className="w-4 h-4" />, link: "/notifications" },
     { label: "Logout", icon: <Download className="w-4 h-4 rotate-180" />, link: "#", action: logout },
   ];
 
   const moreMenuItems = [
-    { label: "Notification Settings", icon: <Bell className="w-4 h-4" /> },
-    { label: "24x7 Customer Care", icon: <HelpCircle className="w-4 h-4" /> },
-    { label: "Advertise", icon: <TrendingUp className="w-4 h-4" /> },
-    { label: "Download App", icon: <Download className="w-4 h-4" /> },
+    { label: "Notification Settings", icon: <Bell className="w-4 h-4" />, link: "/notification-settings" },
+    { label: "24x7 Customer Care", icon: <HelpCircle className="w-4 h-4" />, link: "/helpcenter" },
+    { label: "Advertise", icon: <TrendingUp className="w-4 h-4" />, link: "/advertise" },
+    { label: "Download App", icon: <Download className="w-4 h-4" />, link: "/download-app" },
   ];
 
   const toggleProfileMenu = (show: boolean) => {
@@ -62,19 +62,19 @@ export default function Navbar() {
             </div>
           </Link>
           
-          <div className="hidden lg:flex items-center gap-2 bg-[#f0f2f5]/50 px-3 py-2 rounded-lg cursor-pointer hover:bg-white/50 transition">
+          <Link href="/minutes" className="hidden lg:flex items-center gap-2 bg-[#f0f2f5]/50 px-3 py-2 rounded-lg cursor-pointer hover:bg-white/50 transition">
              <div className="bg-[#f0f2f5] p-1 rounded-md">
                 <Store className="w-4 h-4 text-gray-600" />
              </div>
              <span className="text-sm font-medium text-gray-800">Minutes</span>
-          </div>
+          </Link>
 
-          <div className="hidden lg:flex items-center gap-2 bg-[#f0f2f5]/50 px-3 py-2 rounded-lg cursor-pointer hover:bg-white/50 transition">
+          <Link href="/travel" className="hidden lg:flex items-center gap-2 bg-[#f0f2f5]/50 px-3 py-2 rounded-lg cursor-pointer hover:bg-white/50 transition">
              <div className="bg-[#f0f2f5] p-1 rounded-md text-red-400">
                 <TrendingUp className="w-4 h-4" />
              </div>
              <span className="text-sm font-medium text-gray-800">Travel</span>
-          </div>
+          </Link>
         </div>
 
         {/* Search Bar */}
@@ -167,10 +167,10 @@ export default function Navbar() {
             {mounted && showMoreMenu && (
               <div className="absolute top-full right-0 w-[240px] bg-white text-gray-800 shadow-2xl rounded-xl py-2 mt-2 border border-gray-100 animate-in fade-in slide-in-from-top-2 duration-200 transition">
                 {moreMenuItems.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 transition cursor-pointer text-gray-700 font-medium">
+                  <Link href={item.link} key={idx} className="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 transition cursor-pointer text-gray-700 font-medium">
                     {item.icon}
                     <span>{item.label}</span>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}

@@ -27,6 +27,7 @@ class Order(TimestampMixin, Base):
     total = Column(Numeric(10, 2), nullable=False)
     payment_method = Column(String(50), nullable=False)
     payment_status = Column(String(50), nullable=False, default="PENDING")
+    coupon_code = Column(String(50), nullable=True)
 
     user = relationship("User", backref="orders")
     shipping_address = relationship("ShippingAddress", back_populates="orders")

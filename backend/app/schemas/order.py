@@ -27,6 +27,7 @@ class ShippingAddressOut(ShippingAddressIn):
 class CheckoutRequest(BaseModel):
     address: Optional[ShippingAddressIn] = None
     use_existing_address_id: Optional[UUID4] = None
+    coupon_code: Optional[str] = None
     payment_method: Literal["COD", "UPI", "CARD", "Wallets", "Net Banking", "Credit / Debit / ATM Card"]
 
 class OrderItemOut(BaseModel):

@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.routes import products, cart, orders, auth
+from app.api.routes import products, cart, orders, auth, coupons, gift_cards, plus
 from app.api.routes.user_profile import router as profile_router
 from app.core.config import settings
 
@@ -29,3 +29,6 @@ app.include_router(orders.router, prefix="/api/v1/orders", tags=["Orders"])
 app.include_router(orders.address_router, prefix="/api/v1/addresses", tags=["Addresses"])
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Auth"])
 app.include_router(profile_router, prefix="/api/v1/profile", tags=["Profile"])
+app.include_router(coupons.router, prefix="/api/v1/coupons", tags=["Coupons"])
+app.include_router(gift_cards.router, prefix="/api/v1/giftcards", tags=["Gift Cards"])
+app.include_router(plus.router, prefix="/api/v1/plus", tags=["Plus Zone"])

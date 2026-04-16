@@ -259,7 +259,7 @@ class AuthService:
         try:
             # Secure OAuth2 Validation reaching directly out to Google's public keys
             try:
-                idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), client_id)
+                idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), client_id, clock_skew_in_seconds=60)
             except Exception as e:
                 print(f"GOOGLE AUTH ERROR: {str(e)}")
                 print(f"CLIENT_ID USED: '{client_id}'")

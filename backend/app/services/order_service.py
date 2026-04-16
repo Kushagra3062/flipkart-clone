@@ -12,17 +12,36 @@ from app.models.product import Product
 from app.models.shipping_address import ShippingAddress
 from app.models.order import Order, OrderStatus
 from app.models.order_item import OrderItem
+from app.models.coupon import Coupon
 from app.schemas.order import CheckoutRequest, OrderOut, OrderListItem, ShippingAddressOut
 from app.services.product_service import map_to_list_item
+from datetime import datetime
 
 def generate_order_number() -> str:
     return "ORD-" + ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
 
 async def place_order(db: AsyncSession, user_id: UUID4, checkout_request: CheckoutRequest) -> OrderOut:
-    # We will wrap the operations logically. If any step fails, we raise an HTTPException,
-    # which causes the FastAPI session dependency to rollback without committing.
+    # 1. Validate Coupon if provided
+    applied_coupon = None
+    if checkout_request.coupon_code:
+        # Check if user already used this coupon
+        used_stmt = select(Order).where(Order.user_id == user_id, Order.coupon_code == checkout_request.coupon_code)
+        used_res = await db.execute(used_stmt)
+        if used_res.scalars().first():
+            raise HTTPException(status_code=400, detail="You have already used this coupon code.")
+            
+        coupon_stmt = select(Coupon).where(
+            Coupon.code == checkout_request.coupon_code,
+            Coupon.is_active == True,
+            Coupon.expiry_date > datetime.utcnow()
+        )
+        coupon_res = await db.execute(coupon_stmt)
+        applied_coupon = coupon_res.scalars().first()
+        
+        if not applied_coupon:
+            raise HTTPException(status_code=400, detail="Invalid or expired coupon code.")
 
-    # 1. Fetch Cart
+    # 2. Fetch Cart
     cart_stmt = select(CartItem).options(selectinload(CartItem.product).selectinload(Product.images)).filter(CartItem.user_id == user_id)
     cart_res = await db.execute(cart_stmt)
     cart_items = cart_res.scalars().all()
@@ -46,6 +65,19 @@ async def place_order(db: AsyncSession, user_id: UUID4, checkout_request: Checko
         subtotal += item_subtotal
         total_amount += item_total
         item_count += item.quantity
+
+    if applied_coupon:
+        if total_amount < Decimal(str(applied_coupon.min_order_value)):
+            raise HTTPException(status_code=400, detail=f"Minimum order value of ₹{applied_coupon.min_order_value} required for this coupon.")
+            
+        coupon_discount = Decimal("0.0")
+        if applied_coupon.discount_type == "percentage":
+            coupon_discount = total_amount * Decimal(str(applied_coupon.discount_value)) / Decimal("100.0")
+            # Usually percentage coupons have a max cap, but we'll leave it simple
+        else:
+            coupon_discount = Decimal(str(applied_coupon.discount_value))
+            
+        total_amount -= coupon_discount
 
     delivery_fee = Decimal("0.0") if total_amount > 499 else Decimal("40.0")
     total_amount += delivery_fee
@@ -80,7 +112,8 @@ async def place_order(db: AsyncSession, user_id: UUID4, checkout_request: Checko
         discount=discount,
         delivery_fee=delivery_fee,
         total=total_amount,
-        payment_method=checkout_request.payment_method
+        payment_method=checkout_request.payment_method,
+        coupon_code=checkout_request.coupon_code
     )
     db.add(new_order)
     await db.flush() # Yield order ID

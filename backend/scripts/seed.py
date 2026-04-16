@@ -3,6 +3,7 @@ import httpx
 import uuid
 import random
 from typing import List, Dict
+from datetime import datetime
 from sqlalchemy import text, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from passlib.hash import bcrypt
@@ -13,6 +14,8 @@ from app.models.user import User
 from app.models.category import Category
 from app.models.product import Product
 from app.models.product_image import ProductImage
+from app.models.coupon import Coupon
+from app.models.gift_card import GiftCard
 
 # Real FlipKart Categories
 CATEGORY_LIST = [
@@ -189,7 +192,40 @@ async def seed_database():
             product_models = []
             image_models = []
 
-        print("Database re-seeded successfully with 1000 high-fidelity products!")
+        # 5. Create Coupons
+        print("Seeding coupons...")
+        coupons = [
+            Coupon(
+                id=uuid.uuid4(),
+                code="WELCOME200", 
+                description="Buy for ₹299, get offer", 
+                discount_value=200, 
+                discount_type="fixed",
+                min_order_value=299,
+                expiry_date=datetime(2026, 4, 30)
+            ),
+            Coupon(
+                id=uuid.uuid4(),
+                code="FASHION10", 
+                description="10% off on Men's Clothing", 
+                discount_value=10, 
+                discount_type="percentage",
+                min_order_value=999,
+                expiry_date=datetime(2026, 1, 20)
+            )
+        ]
+        db.add_all(coupons)
+
+        # 6. Create Gift Cards
+        print("Seeding gift cards...")
+        gcs = [
+            GiftCard(id=uuid.uuid4(), card_number="1234123412341234", pin="112233", balance=5000.0, is_active=True),
+            GiftCard(id=uuid.uuid4(), card_number="9876987698769876", pin="665544", balance=1000.0, is_active=True)
+        ]
+        db.add_all(gcs)
+
+        await db.commit()
+        print("Database re-seeded successfully with 1000 products, coupons, and gift cards!")
 
 if __name__ == "__main__":
     asyncio.run(seed_database())

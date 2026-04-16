@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { Suspense } from "react";
 
-type Section = "profile" | "addresses" | "wishlist" | "orders";
+type Section = "profile" | "addresses" | "wishlist" | "orders" | "coupons" | "gift-cards";
 
 interface Address {
   id: string;
@@ -372,6 +372,16 @@ function ProfilePageContent() {
                     className={`block px-2 py-2 text-[13px] rounded transition ${section === 'wishlist' ? "text-primary font-semibold bg-blue-50" : "text-gray-600 hover:text-primary hover:bg-gray-50"}`}
                   >
                     My Wishlist
+                  </Link>
+                  <Link href="/coupons" 
+                    className={`block px-2 py-2 text-[13px] rounded transition ${section === 'coupons' ? "text-primary font-semibold bg-blue-50" : "text-gray-600 hover:text-primary hover:bg-gray-50"}`}
+                  >
+                    My Coupons
+                  </Link>
+                  <Link href="/gift-cards" 
+                    className={`block px-2 py-2 text-[13px] rounded transition ${section === 'gift-cards' ? "text-primary font-semibold bg-blue-50" : "text-gray-600 hover:text-primary hover:bg-gray-50"}`}
+                  >
+                    My Gift Cards
                   </Link>
                 </div>
               </div>

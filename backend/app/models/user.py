@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, String, Boolean
+from sqlalchemy import Column, String, Boolean, Integer
 from sqlalchemy.dialects.postgresql import UUID
 from app.db.session import Base
 from app.models.base import TimestampMixin
@@ -17,3 +17,6 @@ class User(TimestampMixin, Base):
     phone_verified = Column(Boolean(), default=False)
     avatar_url = Column(String(500), nullable=True)
     is_active = Column(Boolean(), default=True)
+    
+    supercoins = Column(Integer, default=0)
+    is_plus_member = Column(Boolean(), default=False)
